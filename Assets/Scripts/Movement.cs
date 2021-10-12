@@ -8,7 +8,7 @@ public class Movement : MonoBehaviour
 
     public float speed = 5;
 
-    public float jumpForce = 8;
+    public float jumpForce = 4;
 
     bool isGrounded = false;
 
@@ -30,12 +30,15 @@ public class Movement : MonoBehaviour
 
     public float maxJumpMultiplier = 2;
 
-    Transform transform;
+    Transform transfrm;
+
+    public Camera cam;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        transform = GetComponent<Transform>();
+        transfrm = GetComponent<Transform>();
     }
 
     // Update is called once per frame
@@ -51,17 +54,22 @@ public class Movement : MonoBehaviour
         rb.freezeRotation = true;
         float x = Input.GetAxisRaw("Horizontal");
         float moveBy = x * speed;
-        if (Input.GetKey(KeyCode.Space) && isGrounded) {
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        {
             rb.velocity = new Vector2(moveBy / 3, rb.velocity.y);
-        } else {
+        }
+        else
+        {
             rb.velocity = new Vector2(moveBy, rb.velocity.y);
         }
-        
     }
 
     void Jump()
     {
-        if (Input.GetKey(KeyCode.Space) && (isGrounded || Time.time - lastTimeGrounded <= rememberGroundedFor))
+        if (
+            Input.GetKey(KeyCode.Space) &&
+            (isGrounded || Time.time - lastTimeGrounded <= rememberGroundedFor)
+        )
         {
             if (jumpChargeTime < maxJumpMultiplier)
             {
@@ -69,9 +77,13 @@ public class Movement : MonoBehaviour
                 transform.localScale += new Vector3(0.0015f, -0.0015f);
             }
         }
-        else if (Input.GetKeyUp(KeyCode.Space) && (isGrounded || Time.time - lastTimeGrounded <= rememberGroundedFor))
+        else if (
+            Input.GetKeyUp(KeyCode.Space) &&
+            (isGrounded || Time.time - lastTimeGrounded <= rememberGroundedFor)
+        )
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce * (1 + jumpChargeTime));
+            rb.velocity =
+                new Vector2(rb.velocity.x, jumpForce * (1 + jumpChargeTime));
             jumpChargeTime = 0;
             transform.localScale = new Vector3(1, 1);
         }
@@ -95,6 +107,20 @@ public class Movement : MonoBehaviour
                 lastTimeGrounded = Time.time;
             }
             isGrounded = false;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Shrink")
+        {
+            transform.localScale = new Vector3(0.2f, 0.2f);
+            cam.orthographicSize = 2;
+        }
+        if (other.tag == "Grow")
+        {
+            transform.localScale = new Vector3(1, 1);
+            cam.orthographicSize = 7;
         }
     }
 }
