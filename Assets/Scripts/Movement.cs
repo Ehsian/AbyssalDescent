@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
@@ -26,19 +27,30 @@ public class Movement : MonoBehaviour
 
     float lastTimeGrounded;
 
+    float lastTimeDamaged;
+
     private float jumpChargeTime;
 
     public float maxJumpMultiplier = 2;
 
     Transform transfrm;
 
-    public Camera cam;
+    public Transform tpexit;
+    [SerializeField]
+    float maxHP = 5f;
+
+    public Slider hpBar;
+
+    float hp = 5f;
 
     // Start is called before the first frame update
     void Start()
     {
+        transform.position = new Vector3(7.85f, 65.5f, 0f);
         rb = GetComponent<Rigidbody2D>();
         transfrm = GetComponent<Transform>();
+        lastTimeDamaged = Time.time;
+        hp = maxHP;
     }
 
     // Update is called once per frame
@@ -47,6 +59,8 @@ public class Movement : MonoBehaviour
         Move();
         Jump();
         CheckIfGrounded();
+        //Debug.Log(Mathf.Floor(rb.velocity.y));
+        hpBar.value = hp/maxHP;
     }
 
     void Move()
@@ -112,15 +126,26 @@ public class Movement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Shrink")
+        if (other.tag == "Invis")
         {
-            transform.localScale = new Vector3(0.2f, 0.2f);
-            cam.orthographicSize = 2;
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
-        if (other.tag == "Grow")
+        if (other.tag == "Vis")
         {
-            transform.localScale = new Vector3(1, 1);
-            cam.orthographicSize = 7;
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+            if (Time.time - lastTimeDamaged > 0.1f)
+            {
+                Debug.Log("HIT");
+                hp--;
+                lastTimeDamaged = Time.time;
+            }
         }
     }
 }

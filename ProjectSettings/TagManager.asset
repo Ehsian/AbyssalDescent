@@ -7,8 +7,8 @@ TagManager:
   - L
   - R
   - Enemy
-  - Shrink
-  - Grow
+  - Invis
+  - Vis
   layers:
   - Default
   - TransparentFX
