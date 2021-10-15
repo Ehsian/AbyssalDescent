@@ -11,7 +11,7 @@ public class EnemyMovement : MonoBehaviour
 
     float move = 1.5f;
     public float maxEnemyHP = 10f;
-    float enemyHP = 10f;
+    public float enemyHP = 10f;
     public Slider hpBar;
     Vector3 hpPos;
 
@@ -31,6 +31,13 @@ public class EnemyMovement : MonoBehaviour
         hpBar.value = enemyHP/maxEnemyHP;
         hpPos = Camera.main.WorldToScreenPoint(new Vector3(this.transform.position.x, this.transform.position.y + 0.85f, 0f));
         hpBar.transform.position = hpPos;
+
+        if (enemyHP <= 0) gameObject.SetActive(false);
+    }
+
+    public void TakeDamage(float dmg, string method) {
+        enemyHP -= dmg;
+        Debug.Log("Enemy took " + dmg + " from " + method + ".");
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -44,6 +51,22 @@ public class EnemyMovement : MonoBehaviour
         {
             move = -initSpeed;
             transform.localScale = new Vector2(0.5f, 0.4f);
+        }
+
+        if (other.tag == "FireProjectile")
+        {
+            Destroy(other.gameObject);
+            TakeDamage(6, "fire");
+            Debug.Log("goblin burnt");
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "WaterProjectile"){
+            Destroy(other.gameObject, 0.25f);
+            TakeDamage(5, "water");
+            Debug.Log("goblin splashed");
         }
     }
 }

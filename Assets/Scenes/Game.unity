@@ -1083,7 +1083,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 497684780}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 02edcd49587b54e18a8193b0e742ba33, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1199,7 +1199,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initSpeed: 2
-  maxEnemyHP: 10
+  maxEnemyHP: 100
+  enemyHP: 100
   hpBar: {fileID: 981230516}
 --- !u!1 &523833215
 GameObject:
@@ -3579,7 +3580,6 @@ GameObject:
   - component: {fileID: 1433854748}
   - component: {fileID: 1433854751}
   - component: {fileID: 1433854747}
-  - component: {fileID: 1433854752}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -3726,25 +3726,9 @@ MonoBehaviour:
   tpexit: {fileID: 1867508689}
   maxHP: 5
   hpBar: {fileID: 864944532}
---- !u!95 &1433854752
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1433854746}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 93021889a1988423c87035c6ebbb409c, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  recentlyLeft: 0
+  fireball: {fileID: 3420685996295649355, guid: 173b01ad2876e4b26acf016682a67b20, type: 3}
+  wave: {fileID: 2573231525466034822, guid: accf1a957cbc249a69a7a92822f3f74f, type: 3}
 --- !u!1 &1449417633
 GameObject:
   m_ObjectHideFlags: 0

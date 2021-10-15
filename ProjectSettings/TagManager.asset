@@ -9,6 +9,9 @@ TagManager:
   - Enemy
   - Invis
   - Vis
+  - FireProjectile
+  - LightningProjectile
+  - WaterProjectile
   layers:
   - Default
   - TransparentFX

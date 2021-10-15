@@ -5,12 +5,16 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
+    //Object
     Rigidbody2D rb;
+    Transform transfrm;
 
+    //Movement
     public float speed = 5;
 
     public float jumpForce = 4;
 
+    //Jumping
     bool isGrounded = false;
 
     public float fallMultiplier = 8;
@@ -27,21 +31,28 @@ public class Movement : MonoBehaviour
 
     float lastTimeGrounded;
 
-    float lastTimeDamaged;
-
     private float jumpChargeTime;
 
     public float maxJumpMultiplier = 2;
 
-    Transform transfrm;
-
+    //Cinematic
     public Transform tpexit;
+
+    //Combat
+    float lastTimeDamaged;
+
     [SerializeField]
     float maxHP = 5f;
 
     public Slider hpBar;
 
     float hp = 5f;
+    public bool recentlyLeft;
+    float squishThreshold = 6;
+    Vector3 vel;
+    //Weapons
+    public GameObject fireball;
+    public GameObject wave;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +70,7 @@ public class Movement : MonoBehaviour
         Move();
         Jump();
         CheckIfGrounded();
+        Shoot();
         //Debug.Log(Mathf.Floor(rb.velocity.y));
         hpBar.value = hp/maxHP;
     }
@@ -67,6 +79,14 @@ public class Movement : MonoBehaviour
     {
         rb.freezeRotation = true;
         float x = Input.GetAxisRaw("Horizontal");
+
+        if (x < 0) {
+            recentlyLeft = true;
+        }
+        if (x > 0) {
+            recentlyLeft = false;
+        }
+
         float moveBy = x * speed;
         if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
@@ -75,6 +95,15 @@ public class Movement : MonoBehaviour
         else
         {
             rb.velocity = new Vector2(moveBy, rb.velocity.y);
+        }
+    }
+
+    void Shoot() {
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            GameObject fire = (GameObject) Instantiate(fireball, transform.position, Quaternion.identity);
+        }
+        if (Input.GetKeyDown(KeyCode.W)) {
+            GameObject water = (GameObject) Instantiate(wave, transform.position, Quaternion.identity);
         }
     }
 
@@ -136,11 +165,19 @@ public class Movement : MonoBehaviour
         }
     }
 
+    void FixedUpdate() {
+        vel = rb.velocity;
+    }
+
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Enemy")
         {
-            if (Time.time - lastTimeDamaged > 0.1f)
+            if (Mathf.Abs(Mathf.Floor(vel.y)) >= squishThreshold) {
+                EnemyMovement enemy = other.gameObject.GetComponent<EnemyMovement>();
+                enemy.TakeDamage(Mathf.Abs(Mathf.Floor(vel.y / 3)), "being squished");
+            }
+            else if (Time.time - lastTimeDamaged > 0.1f)
             {
                 Debug.Log("HIT");
                 hp--;
