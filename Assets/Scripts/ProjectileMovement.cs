@@ -14,13 +14,7 @@ public class ProjectileMovement : MonoBehaviour
     Vector3 mouse;
 
     bool left;
-
     float t;
-
-    Vector3 startPosition;
-
-    Vector3 target;
-
     void Start()
     {
         Movement moo = GameObject.Find("Player").GetComponent<Movement>();
@@ -32,8 +26,22 @@ public class ProjectileMovement : MonoBehaviour
                 Destroy(this.gameObject, 5f);
                 break;
             case "Water":
-                speed = 5;
-                Destroy(this.gameObject, 7.5f);
+                t = Time.time;
+                if (left)
+                {
+                    transform.position +=
+                        transform.right * -1f;
+                    transform.localScale = new Vector2(-5f, 5f);
+                }
+                else
+                {
+                    transform.position +=
+                        transform.right;
+                    transform.localScale = new Vector2(5f, 5f);
+                }
+                speed = 2;
+                
+                Destroy(this.gameObject, 5f);
                 break;
             default:
                 speed = 0;
@@ -61,6 +69,9 @@ public class ProjectileMovement : MonoBehaviour
                 }
                 break;
             case "Water":
+                if (Time.time - t >= 1.5f) {
+                    speed = 6f;
+                }
                 if (left)
                 {
                     transform.position +=

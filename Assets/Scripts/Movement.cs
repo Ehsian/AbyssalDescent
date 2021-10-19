@@ -35,6 +35,8 @@ public class Movement : MonoBehaviour
 
     public float maxJumpMultiplier = 2;
 
+    public float squashAndStretch = 0.0015f;
+
     //Cinematic
     public Transform tpexit;
 
@@ -71,8 +73,7 @@ public class Movement : MonoBehaviour
         Jump();
         CheckIfGrounded();
         Shoot();
-        //Debug.Log(Mathf.Floor(rb.velocity.y));
-        hpBar.value = hp/maxHP;
+        hpBar.value = hp / maxHP;
     }
 
     void Move()
@@ -109,6 +110,11 @@ public class Movement : MonoBehaviour
 
     void Jump()
     {
+        if (Mathf.Abs(vel.y)>0.5)
+        {
+            transform.localScale = new Vector3(0.98f - Mathf.Min(Mathf.Abs(vel.y), 15) * squashAndStretch * 15, 0.98f + Mathf.Min(Mathf.Abs(vel.y), 1) * squashAndStretch * 15);
+            return;
+        }
         if (
             Input.GetKey(KeyCode.Space) &&
             (isGrounded || Time.time - lastTimeGrounded <= rememberGroundedFor)
@@ -117,7 +123,7 @@ public class Movement : MonoBehaviour
             if (jumpChargeTime < maxJumpMultiplier)
             {
                 jumpChargeTime += Time.deltaTime;
-                transform.localScale += new Vector3(0.0015f, -0.0015f);
+                transform.localScale += new Vector3(squashAndStretch, -squashAndStretch);
             }
         }
         else if (
@@ -128,15 +134,31 @@ public class Movement : MonoBehaviour
             rb.velocity =
                 new Vector2(rb.velocity.x, jumpForce * (1 + jumpChargeTime));
             jumpChargeTime = 0;
-            transform.localScale = new Vector3(1, 1);
+        }
+        else if(transform.localScale!=new Vector3(1,1))
+        {
+            if (Mathf.Round(transform.localScale.x) == 1 && Mathf.Round(transform.localScale.y) == 1)
+            {
+                transform.localScale = new Vector3(0.98f, 0.98f);
+                //Debug.Log("Ki3");
+            }
+            else if (transform.localScale.x < 1)
+            {
+                transform.localScale = new Vector3(transform.localScale.x + squashAndStretch, transform.localScale.y - squashAndStretch);
+                //Debug.Log("Ki");
+            }
+            else
+            {
+                transform.localScale = new Vector3(transform.localScale.x - squashAndStretch, transform.localScale.y + squashAndStretch);
+                //Debug.Log("Ki2");
+            }
         }
     }
 
     void CheckIfGrounded()
     {
         Collider2D colliders =
-            Physics2D
-                .OverlapCircle(isGroundedChecker.position,
+            Physics2D.OverlapCircle(isGroundedChecker.position,
                 checkGroundRadius,
                 groundLayer);
         if (colliders != null)
@@ -150,6 +172,11 @@ public class Movement : MonoBehaviour
                 lastTimeGrounded = Time.time;
             }
             isGrounded = false;
+            if (jumpChargeTime != 0 && Time.time - lastTimeGrounded > rememberGroundedFor)
+            {
+                jumpChargeTime = 0;
+                transform.localScale = new Vector3(0.98f, 0.98f);
+            }
         }
     }
 
@@ -180,6 +207,14 @@ public class Movement : MonoBehaviour
             else if (Time.time - lastTimeDamaged > 0.1f)
             {
                 Debug.Log("HIT");
+                hp--;
+                lastTimeDamaged = Time.time;
+            }
+        }
+        if (other.gameObject.tag == "Hazard") {
+            if (Time.time - lastTimeDamaged > 0.1f)
+            {
+                Debug.Log("Impaled");
                 hp--;
                 lastTimeDamaged = Time.time;
             }

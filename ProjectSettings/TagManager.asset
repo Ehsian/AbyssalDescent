@@ -12,6 +12,7 @@ TagManager:
   - FireProjectile
   - LightningProjectile
   - WaterProjectile
+  - Hazard
   layers:
   - Default
   - TransparentFX
