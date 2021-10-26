@@ -90,7 +90,6 @@ public class Movement : MonoBehaviour
         hpBar.value = hp / maxHP;
         lowestHeight = transform.position.y < lowestHeight ? transform.position.y : lowestHeight;
         poisonCloud.transform.position = new Vector2(0, lowestHeight + poisonDiff);
-        print("Lowest = " + lowestHeight);
     }
 
     void Move()
@@ -112,8 +111,10 @@ public class Movement : MonoBehaviour
         {
             rb.velocity = new Vector2(moveBy / 3, rb.velocity.y);
         }
-        else
-        {
+        else if (!isGrounded) {
+            rb.velocity = new Vector2(moveBy / 1.25f, rb.velocity.y);
+        }
+        else {
             rb.velocity = new Vector2(moveBy, rb.velocity.y);
         }
     }
