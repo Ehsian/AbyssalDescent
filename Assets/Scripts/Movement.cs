@@ -38,9 +38,6 @@ public class Movement : MonoBehaviour
 
     public float squashAndStretch = 0.0015f;
 
-    //Cinematic
-    public Transform tpexit;
-
     //Combat
     float lastTimeDamaged;
 
@@ -71,8 +68,8 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 60;
-        transform.position = new Vector3(7.85f, 65.5f, 0f);
+        Application.targetFrameRate = -1;
+        transform.position = new Vector3(12.5f, 60.5f, 0f);
         lowestHeight = 65.5f;
         rb = GetComponent<Rigidbody2D>();
         transfrm = GetComponent<Transform>();
@@ -112,7 +109,7 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector2(moveBy / 3, rb.velocity.y);
         }
         else if (!isGrounded) {
-            rb.velocity = new Vector2(moveBy / 1.25f, rb.velocity.y);
+            rb.velocity = new Vector2(moveBy / 1.35f, rb.velocity.y);
         }
         else {
             rb.velocity = new Vector2(moveBy, rb.velocity.y);
@@ -204,6 +201,23 @@ public class Movement : MonoBehaviour
         if (colliders != null)
         {
             isGrounded = true;
+            if (Mathf.Abs(Mathf.Floor(vel.y)) >= 12f)
+            {
+                print(Mathf.Abs(Mathf.Floor(vel.y)));
+                if (Mathf.Abs(Mathf.Floor(vel.y)) < 14f) {
+                    hp -=1;
+                } else if (Mathf.Abs(Mathf.Floor(vel.y)) < 16f) { 
+                    hp -=2;
+                } else if (Mathf.Abs(Mathf.Floor(vel.y)) < 18f) {
+                    hp -=3;
+                } else if (Mathf.Abs(Mathf.Floor(vel.y)) < 20f) {
+                    hp -=4;
+                } else {
+                    hp -=10;
+                }
+
+                //add timer rb.velocity = new Vector2(rb.velocity.x, 0.1f);
+            }
         }
         else
         {
@@ -220,18 +234,6 @@ public class Movement : MonoBehaviour
                 jumpChargeTime = 0;
                 transform.localScale = new Vector3(0.98f, 0.98f);
             }
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "Invis")
-        {
-            gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        }
-        if (other.tag == "Vis")
-        {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
         }
     }
 

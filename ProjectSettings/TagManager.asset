@@ -10,7 +10,6 @@ TagManager:
   - Invis
   - Vis
   - FireProjectile
-  - LightningProjectile
   - WaterProjectile
   - Hazard
   - LowGravity

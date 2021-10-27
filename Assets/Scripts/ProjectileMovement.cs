@@ -8,7 +8,8 @@ public class ProjectileMovement : MonoBehaviour
     public string projectileType;
 
     float speed;
-
+    public float sizeX;
+    public float sizeY;
     Vector3 dir;
 
     Vector3 mouse;
@@ -31,7 +32,7 @@ public class ProjectileMovement : MonoBehaviour
                 {
                     transform.position +=
                         transform.right * -1f;
-                    transform.localScale = new Vector2(-5f, 5f);
+                    transform.localScale = new Vector2(-sizeX, sizeY);
                 }
                 else
                 {
@@ -59,13 +60,13 @@ public class ProjectileMovement : MonoBehaviour
                 {
                     transform.position +=
                         transform.right * -speed * Time.deltaTime;
-                    transform.localScale = new Vector2(-5, 5);
+                    transform.localScale = new Vector2(-sizeX, sizeY);
                 }
                 else
                 {
                     transform.position +=
                         transform.right * speed * Time.deltaTime;
-                    transform.localScale = new Vector2(5, 5);
+                    transform.localScale = new Vector2(sizeX, sizeY);
                 }
                 break;
             case "Water":
@@ -76,13 +77,13 @@ public class ProjectileMovement : MonoBehaviour
                 {
                     transform.position +=
                         transform.right * -speed * Time.deltaTime;
-                    transform.localScale = new Vector2(-5f, 5f);
+                    transform.localScale = new Vector2(-sizeX, sizeY);
                 }
                 else
                 {
                     transform.position +=
                         transform.right * speed * Time.deltaTime;
-                    transform.localScale = new Vector2(5f, 5f);
+                    transform.localScale = new Vector2(sizeX, sizeY);
                 }
                 break;
             default:
